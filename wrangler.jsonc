@@ -33,11 +33,9 @@
   "r2_buckets": [
     {
       "binding": "R2",
-<<<<<<< HEAD
+
       "bucket_name": "doubek-cms","preview_bucket_name": "doubek-cms",
-=======
-      "bucket_name": "doubek-cms",
->>>>>>> a7cdaeb (init)
+
     },
     // Create a R2 binding with the binding name "NEXT_INC_CACHE_R2_BUCKET"
     // {
