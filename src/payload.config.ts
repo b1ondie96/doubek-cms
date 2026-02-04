@@ -10,7 +10,9 @@ import { r2Storage } from '@payloadcms/storage-r2'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
-
+import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
+import type { Config } from './payload-types'
+import { Tenants } from '@/collections/Tenants'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
@@ -30,17 +32,25 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  collections: [Users, Media,Tenants],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: sqliteD1Adapter({ binding: cloudflare.env.D1 }),
-  plugins: [
+  plugins: [ 
     r2Storage({
       bucket: cloudflare.env.R2 as unknown as Parameters<typeof r2Storage>[0]['bucket'],
       collections: { media: true },
+    }),multiTenantPlugin<Config>({
+      collections: {
+        users: {},
+        media: {
+          isGlobal: true,
+        },
+        
+      },
     }),
   ],
 })
